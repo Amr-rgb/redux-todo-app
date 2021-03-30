@@ -1,5 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { applyMiddleware, combineReducers, createStore } from 'redux'
+import * as actions from './actions'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const logging = (store) => (next) => (action) => {
+    console.group(action.type)
+    const result = next(action)
+    console.log(store.getState())
+    console.groupEnd()
+    return result
+}
+
+const bitcoinAlert = (store) => (next) => (action) => {
+    if (action.type === actions.ADD_TODO && action.todo.name.toLowerCase().includes('bitcoin'))
+        return alert("bitcoin isn't allowed")
+    return next(action)
+}
+
+const store = createStore(combineReducers({
+    todos,
+    goals
+}), applyMiddleware(logging, bitcoinAlert))
+
+function todos(state = [], action) {
+    switch (action.type) {
+        case actions.ADD_TODO:
+            return state = state.concat([action.todo])
+        case actions.REMOVE_TODO:
+            return state = state.filter(i => i.id !== action.id)
+        case actions.TOGGLE_TODO:
+            return state = state.map(i => i.id === action.todo.id ?
+                { ...i, completed: !action.completed } : i)
+        default:
+            return state
+    }
+}
+function goals(state = [], action) {
+    switch (action.type) {
+        case actions.ADD_GOAL:
+            return state = state.concat([action.goal])
+        case actions.REMOVE_GOAL:
+            return state = state.filter(i => i.id !== action.id)
+        default:
+            return state
+    }
+}
+
+ReactDOM.render(<App store={store} />, document.getElementById('root'));
