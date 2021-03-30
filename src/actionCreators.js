@@ -6,13 +6,21 @@ function generateID() {
 
 // todos actions
 
+export function initialDataAction(todos, goals) {
+    return {
+        type: actions.INITIAL_DATA,
+        todos,
+        goals
+    }
+}
+
 export function addTodoAction(name) {
     return {
         type: actions.ADD_TODO,
         todo: {
             id: generateID(),
             name,
-            completed: false
+            complete: false
         }
     }
 }
@@ -24,10 +32,10 @@ export function removeTodoAction(id) {
     }
 }
 
-export function toggleTodoAction(todo) {
+export function toggleTodoAction(id) {
     return {
         type: actions.TOGGLE_TODO,
-        todo
+        id
     }
 }
 

@@ -20,28 +20,41 @@ const bitcoinAlert = (store) => (next) => (action) => {
 
 const store = createStore(combineReducers({
     todos,
-    goals
+    goals,
+    loading
 }), applyMiddleware(logging, bitcoinAlert))
 
 function todos(state = [], action) {
     switch (action.type) {
+        case actions.INITIAL_DATA:
+            return action.todos
         case actions.ADD_TODO:
             return state = state.concat([action.todo])
         case actions.REMOVE_TODO:
             return state = state.filter(i => i.id !== action.id)
         case actions.TOGGLE_TODO:
-            return state = state.map(i => i.id === action.todo.id ?
-                { ...i, completed: !action.completed } : i)
+            return state = state.map(i => i.id === action.id ?
+                { ...i, complete: !i.complete } : i)
         default:
             return state
     }
 }
 function goals(state = [], action) {
     switch (action.type) {
+        case actions.INITIAL_DATA:
+            return action.goals
         case actions.ADD_GOAL:
             return state = state.concat([action.goal])
         case actions.REMOVE_GOAL:
             return state = state.filter(i => i.id !== action.id)
+        default:
+            return state
+    }
+}
+function loading(state = true, action) {
+    switch (action.type) {
+        case actions.INITIAL_DATA:
+            return false
         default:
             return state
     }

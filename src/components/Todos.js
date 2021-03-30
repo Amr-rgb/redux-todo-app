@@ -3,25 +3,20 @@ import List from './List'
 import * as actCreators from './../actionCreators'
 
 export default class Todos extends React.Component {
-    componentDidMount() {
-        const { store } = this.props
-
-        store.subscribe(() => {
-            this.forceUpdate()
-        })
-    }
-
     addTodo = () => {
         const value = this.input.value
         this.input.value = ''
 
-        this.props.store.dispatch(actCreators.addTodoAction(value))
+        window.API.saveTodo(value)
+            .then(_ => {
+                this.props.store.dispatch(actCreators.addTodoAction(value))
+            })
+            .catch(() => {
+                alert('error eccured, try again')
+            })
     }
 
     render() {
-        const { store } = this.props
-        const items = store.getState().todos
-
         return (
             <div className="todos">
                 <h2>Todos</h2>
@@ -31,7 +26,7 @@ export default class Todos extends React.Component {
                     ref={input => this.input = input}
                 />
                 <button onClick={this.addTodo}>Add Todo</button>
-                <List store={store} items={items} />
+                <List store={this.props.store} items={this.props.todos} />
             </div>
         )
     }

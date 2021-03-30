@@ -1,26 +1,44 @@
 import * as actCreators from './../actionCreators'
 
 export default function List({ store, items }) {
-    const removeTodo = (id) => {
-        store.dispatch(actCreators.removeTodoAction(id))
+    const removeTodo = (item) => {
+        store.dispatch(actCreators.removeTodoAction(item.id))
+        window.API.deleteTodo(item.id)
+            .catch(() => {
+                alert('error eccured, try again')
+                store.dispatch(actCreators.addTodoAction(item.name))
+            })
     }
 
-    const removeGoal = (id) => {
-        store.dispatch(actCreators.removeGoalAction(id))
+    const removeGoal = (item) => {
+        store.dispatch(actCreators.removeGoalAction(item.id))
+        window.API.deleteGoal(item.id)
+            .catch(() => {
+                alert('error eccured, try again')
+                store.dispatch(actCreators.addGoalAction(item.name))
+            })
     }
 
-    const toggleTodo = (todo) => {
-        store.dispatch(actCreators.toggleTodoAction(todo))
+    const toggleTodo = (id) => {
+        store.dispatch(actCreators.toggleTodoAction(id))
+        window.API.saveTodoToggle(id)
+            .catch(() => {
+                alert('error eccured, try again')
+                store.dispatch(actCreators.toggleTodoAction(id))
+            })
     }
 
     return (
         <ul className="list">
             {items && items.map(item => (
                 <li key={item.id}>{item.name}
-                    {item.hasOwnProperty('completed') && <input type="checkbox" onChange={() => toggleTodo(item)} />}
+                    {item.hasOwnProperty('complete') && <input
+                        type="checkbox"
+                        checked={item.complete ? true : false}
+                        onChange={() => toggleTodo(item.id)} />}
                     <button
                         onClick={() => {
-                            item.hasOwnProperty('completed') ? removeTodo(item.id) : removeGoal(item.id)
+                            item.hasOwnProperty('complete') ? removeTodo(item) : removeGoal(item)
                         }}
                     >X</button>
                 </li>
