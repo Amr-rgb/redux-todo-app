@@ -1,9 +1,5 @@
 import * as actions from './actions'
 
-function generateID() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-};
-
 // todos actions
 
 export function initialDataAction(todos, goals) {
@@ -14,14 +10,10 @@ export function initialDataAction(todos, goals) {
     }
 }
 
-export function addTodoAction(name) {
+export function addTodoAction(todo) {
     return {
         type: actions.ADD_TODO,
-        todo: {
-            id: generateID(),
-            name,
-            complete: false
-        }
+        todo
     }
 }
 
@@ -41,13 +33,10 @@ export function toggleTodoAction(id) {
 
 // goals actions
 
-export function addGoalAction(name) {
+export function addGoalAction(goal) {
     return {
         type: actions.ADD_GOAL,
-        goal: {
-            id: generateID(),
-            name,
-        }
+        goal
     }
 }
 
@@ -55,5 +44,79 @@ export function removeGoalAction(id) {
     return {
         type: actions.REMOVE_GOAL,
         id
+    }
+}
+
+// handling initial data
+
+export function handleInitialData() {
+    return (dispatch) => {
+        Promise.all([window.API.fetchTodos(), window.API.fetchGoals()])
+            .then(([todos, goals]) => {
+                dispatch(initialDataAction(todos, goals))
+            })
+            .catch(() => {
+                alert('error eccured, please reload')
+            })
+    }
+}
+
+// handling todo
+
+export function handleAddTodo(value, cb) {
+    return (dispatch) => {
+        window.API.saveTodo(value)
+            .then(goal => {
+                dispatch(addTodoAction(goal))
+                cb()
+            })
+            .catch(() => {
+                alert('error eccured, try again')
+            })
+    }
+}
+export function handleRemoveTodo(todo) {
+    return (dispatch) => {
+        dispatch(removeTodoAction(todo.id))
+        window.API.deleteTodo(todo.id)
+            .catch(() => {
+                alert('error eccured, try again')
+                dispatch(addTodoAction(todo))
+            })
+    }
+}
+export function handleToggleTodo(id) {
+    return (dispatch) => {
+        dispatch(toggleTodoAction(id))
+        window.API.saveTodoToggle(id)
+            .catch(() => {
+                alert('error eccured, try again')
+                dispatch(toggleTodoAction(id))
+            })
+    }
+}
+
+// handling goals
+
+export function handleAddGoal(value, cb) {
+    return (dispatch) => {
+        window.API.saveGoal(value)
+            .then(goal => {
+                dispatch(addGoalAction(goal))
+                cb()
+            })
+            .catch(() => {
+                alert('error eccured, try again')
+            })
+    }
+}
+export function handleRemoveGoal(goal) {
+    return (dispatch) => {
+        dispatch(removeGoalAction(goal.id))
+        window.API.deleteGoal(goal.id)
+            .catch(() => {
+                alert('error eccured, try again')
+                dispatch(addGoalAction(goal))
+            })
     }
 }

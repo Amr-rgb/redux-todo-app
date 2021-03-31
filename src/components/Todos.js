@@ -1,19 +1,12 @@
 import React from 'react';
 import List from './List'
-import * as actCreators from './../actionCreators'
+import { handleAddTodo } from './../actionCreators'
 
 export default class Todos extends React.Component {
     addTodo = () => {
         const value = this.input.value
-        this.input.value = ''
 
-        window.API.saveTodo(value)
-            .then(_ => {
-                this.props.store.dispatch(actCreators.addTodoAction(value))
-            })
-            .catch(() => {
-                alert('error eccured, try again')
-            })
+        this.props.store.dispatch(handleAddTodo(value, () => this.input.value = ''))
     }
 
     render() {

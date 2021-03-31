@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { applyMiddleware, combineReducers, createStore } from 'redux'
+import thunk from 'redux-thunk'
 import * as actions from './actions'
 
 const logging = (store) => (next) => (action) => {
@@ -22,7 +23,7 @@ const store = createStore(combineReducers({
     todos,
     goals,
     loading
-}), applyMiddleware(logging, bitcoinAlert))
+}), applyMiddleware(thunk, logging, bitcoinAlert))
 
 function todos(state = [], action) {
     switch (action.type) {

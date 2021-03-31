@@ -2,24 +2,18 @@ import React from 'react'
 import './App.css';
 import Goals from './components/Goals';
 import Todos from './components/Todos';
-import * as actCreators from './actionCreators'
+import { handleInitialData } from './actionCreators'
 
 class App extends React.Component {
 
   componentDidMount() {
     const { store } = this.props
 
+    store.dispatch(handleInitialData())
+
     store.subscribe(() => {
       this.forceUpdate()
     })
-
-    Promise.all([window.API.fetchTodos(), window.API.fetchGoals()])
-      .then(([todos, goals]) => {
-        store.dispatch(actCreators.initialDataAction(todos, goals))
-      })
-      .catch(() => {
-        alert('error eccured, please reload')
-      })
   }
 
 

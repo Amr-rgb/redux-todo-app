@@ -1,19 +1,12 @@
 import React from 'react';
 import List from './List'
-import * as actCreators from './../actionCreators'
+import { handleAddGoal } from './../actionCreators'
 
 export default class Goals extends React.Component {
     addGoal = () => {
         const value = this.input.value
-        this.input.value = ''
 
-        window.API.saveGoal(value)
-            .then(_ => {
-                this.props.store.dispatch(actCreators.addGoalAction(value))
-            })
-            .catch(() => {
-                alert('error eccured, try again')
-            })
+        this.props.store.dispatch(handleAddGoal(value, () => this.input.value = ''))
     }
 
     render() {
