@@ -1,37 +1,33 @@
 import React from 'react'
 import './App.css';
-import Goals from './components/Goals';
-import Todos from './components/Todos';
+import { ConnectedGoals } from './components/Goals';
+import { ConnectedTodos } from './components/Todos';
 import { handleInitialData } from './actionCreators'
+import { connect } from 'react-redux';
 
 class App extends React.Component {
 
   componentDidMount() {
-    const { store } = this.props
+    const { dispatch } = this.props
 
-    store.dispatch(handleInitialData())
-
-    store.subscribe(() => {
-      this.forceUpdate()
-    })
+    dispatch(handleInitialData())
   }
 
 
   render() {
-    const { store } = this.props
-    const { todos, goals, loading } = store.getState()
-
-    if (loading) {
+    if (this.props.loading) {
       return <h3>loading</h3>
     }
 
     return (
       <div className="App">
-        <Todos store={store} todos={todos} />
-        <Goals store={store} goals={goals} />
+        <ConnectedTodos />
+        <ConnectedGoals />
       </div>
     );
   }
 }
 
-export default App;
+export const ConnectedApp = connect((state) => ({
+  loading: state.loading
+}))(App)

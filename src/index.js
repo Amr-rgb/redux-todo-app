@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { ConnectedApp } from './App'
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import * as actions from './actions'
+import { Provider } from 'react-redux';
 
 const logging = (store) => (next) => (action) => {
     console.group(action.type)
@@ -61,4 +62,8 @@ function loading(state = true, action) {
     }
 }
 
-ReactDOM.render(<App store={store} />, document.getElementById('root'));
+ReactDOM.render(
+    <Provider store={store}>
+        <ConnectedApp />
+    </Provider>
+    , document.getElementById('root'));

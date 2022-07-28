@@ -1,16 +1,16 @@
 import { handleRemoveTodo, handleToggleTodo, handleRemoveGoal } from './../actionCreators'
 
-export default function List({ store, items }) {
+export default function List({ dispatch, items }) {
     const removeTodo = (item) => {
-        store.dispatch(handleRemoveTodo(item))
+        dispatch(handleRemoveTodo(item))
     }
 
     const removeGoal = (item) => {
-        store.dispatch(handleRemoveGoal(item))
+        dispatch(handleRemoveGoal(item))
     }
 
     const toggleTodo = (id) => {
-        store.dispatch(handleToggleTodo(id))
+        dispatch(handleToggleTodo(id))
     }
 
     return (

@@ -1,12 +1,13 @@
 import React from 'react';
 import List from './List'
 import { handleAddGoal } from './../actionCreators'
+import { connect } from 'react-redux';
 
-export default class Goals extends React.Component {
+class Goals extends React.Component {
     addGoal = () => {
         const value = this.input.value
 
-        this.props.store.dispatch(handleAddGoal(value, () => this.input.value = ''))
+        this.props.dispatch(handleAddGoal(value, () => this.input.value = ''))
     }
 
     render() {
@@ -19,8 +20,12 @@ export default class Goals extends React.Component {
                     ref={input => this.input = input}
                 />
                 <button onClick={this.addGoal}>Add Goal</button>
-                <List store={this.props.store} items={this.props.goals} />
+                <List dispatch={this.props.dispatch} items={this.props.goals} />
             </div>
         )
     }
 }
+
+export const ConnectedGoals = connect((state) => ({
+    goals: state.goals
+}))(Goals)
